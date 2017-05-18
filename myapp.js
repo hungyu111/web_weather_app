@@ -20,6 +20,8 @@ var skycons = new Skycons();
 /*
 Get value from Bootstrap dropdown menu
 */
+
+/*
 function GetUrlSucess(url){
   $.getJSON(url,function(data){
      if(data.query.results){
@@ -30,6 +32,7 @@ function GetUrlSucess(url){
      }
   })
 };
+*/
 /*
 顯示台北市溫度
 */
@@ -39,18 +42,18 @@ function getUrl(city){
 };
 console.log(getUrl('台北市'));
 
-GetUrlSucess(getUrl('台北市'))
+//GetUrlSucess(getUrl('台北市'))
 
 EndPointUrl(getUrl('台北市'));
 
 function EndPointUrl(endurl){
-$.getJSON(endurl,
+$.getWeatherJSON(endurl,
   function(data){
   var currentTemperature = data.query.results.channel.item.condition.temp  ;
 
   var currentTemperatureCel = Math.round((currentTemperature-32)*5/9);
   $(".temperature").text(currentTemperatureCel);
-
+  console.log(data);
   var currentState = data.query.results.channel.item.condition.code;
   switch (parseInt(currentState)) {
     case 11:
@@ -102,6 +105,10 @@ $.getJSON(endurl,
   var Day2 = data.query.results.channel.item.forecast[2].date;
   $('#forecastDay2').text(Day2);
   var Day3 = data.query.results.channel.item.forecast[3].date;
+  console.log(Day3);
+  if (Day3===false){
+    EndPointUrl(getUrl(cityName));
+  };
   $('#forecastDay3').text(Day3);
 
   var Day1Low = data.query.results.channel.item.forecast[1].low;
@@ -182,11 +189,11 @@ function getforecastIcon (forecastCode){
 $('#dropdown li a').each(function () {
       var vm = this;
       var cityName = $(this).text();
-      console.log(cityName);
-    $.getJSON(getUrl(cityName),function(data){
+
+    $.getWeatherJSON(getUrl(cityName),function(data){
       var currentTemperature = data.query.results.channel.item.condition.temp  ;
       var currentTemperatureCel = Math.round((currentTemperature-32)*5/9);
-      console.log(this);
+
       vm.append(currentTemperatureCel + "℃");
 
     })
@@ -203,7 +210,7 @@ $('#dropdown li a').each(function () {
 $('#dropdown li').on('click', function(){
   var cityName = $(this).text();
   $('#city').text(cityName);
-  GetUrlSucess(getUrl(cityName));
+  //GetUrlSucess(getUrl(cityName));
   EndPointUrl(getUrl(cityName));
   console.log(getUrl(cityName));
 });
